@@ -58,6 +58,31 @@ class Config:
     TAKE_PROFIT_PERCENT = float(os.getenv('TAKE_PROFIT_PERCENT', 0.04))
     MAX_OPEN_POSITIONS = int(os.getenv('MAX_OPEN_POSITIONS', 3))
     
+    # ============ REGIME-AWARE STRATEGY CONFIGURATION ============
+    # Regime Detection
+    REGIME_VOLATILITY_LOOKBACK = int(os.getenv('REGIME_VOLATILITY_LOOKBACK', 100))
+    REGIME_CONFIRM_BARS = int(os.getenv('REGIME_CONFIRM_BARS', 5))
+    REGIME_LOW_VOL_PERCENTILE = float(os.getenv('REGIME_LOW_VOL_PERCENTILE', 25))
+    REGIME_HIGH_VOL_PERCENTILE = float(os.getenv('REGIME_HIGH_VOL_PERCENTILE', 75))
+    REGIME_EXTREME_VOL_PERCENTILE = float(os.getenv('REGIME_EXTREME_VOL_PERCENTILE', 95))
+    
+    # Regime Trading Parameters
+    REGIME_MIN_REGIME_AGE = int(os.getenv('REGIME_MIN_REGIME_AGE', 8))
+    REGIME_MAX_REGIME_AGE = int(os.getenv('REGIME_MAX_REGIME_AGE', 200))
+    REGIME_MIN_CONFIDENCE = float(os.getenv('REGIME_MIN_CONFIDENCE', 0.65))
+    
+    # Regime Adaptive Risk
+    REGIME_BASE_RISK = float(os.getenv('REGIME_BASE_RISK', 0.01))  # 1% base
+    REGIME_MAX_RISK = float(os.getenv('REGIME_MAX_RISK', 0.025))   # 2.5% max
+    REGIME_MIN_RISK = float(os.getenv('REGIME_MIN_RISK', 0.005))   # 0.5% min
+    
+    # Regime Kill Switch
+    REGIME_MAX_VOL_SPIKE = float(os.getenv('REGIME_MAX_VOL_SPIKE', 3.0))
+    REGIME_MAX_SPREAD_PERCENT = float(os.getenv('REGIME_MAX_SPREAD_PERCENT', 0.5))
+    REGIME_MAX_CONSECUTIVE_LOSSES = int(os.getenv('REGIME_MAX_CONSECUTIVE_LOSSES', 3))
+    REGIME_MAX_DAILY_TRADES = int(os.getenv('REGIME_MAX_DAILY_TRADES', 5))
+    REGIME_DRAWDOWN_PAUSE = float(os.getenv('REGIME_DRAWDOWN_PAUSE', 0.03))  # 3%
+    
     # ML Model Configuration
     LSTM_SEQUENCE_LENGTH = 60
     LSTM_EPOCHS = 50
