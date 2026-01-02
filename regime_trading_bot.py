@@ -328,7 +328,7 @@ class RegimeTradingBot:
             "magic": 123456,
             "comment": f"Close:{reason}",
             "type_time": mt5.ORDER_TIME_GTC,
-            "type_filling": mt5.ORDER_FILLING_IOC,
+            "type_filling": mt5.ORDER_FILLING_FOK,
         }
         
         result = mt5.order_send(request)
@@ -358,8 +358,23 @@ class RegimeTradingBot:
     
     def check_open_positions(self):
         """Check and manage open positions"""
+        # First, sync with MT5 - remove positions that were closed externally
+        mt5_positions = mt5.positions_get()
+        mt5_tickets = set()
+        if mt5_positions:
+            mt5_tickets = {p.ticket for p in mt5_positions}
+        
         for symbol in list(self.positions.keys()):
             position = self.positions[symbol]
+            
+            # Check if position still exists in MT5 (may have been closed manually or hit SL/TP)
+            if position.ticket not in mt5_tickets:
+                logger.info(f"🔄 Position {symbol} closed externally (SL/TP hit or manual close)")
+                # Record result if possible
+                self.strategies[symbol].record_trade_result(0, is_win=False)  # Unknown result
+                del self.positions[symbol]
+                continue
+            
             position.bars_held += 1
             
             # Check time-based exit
