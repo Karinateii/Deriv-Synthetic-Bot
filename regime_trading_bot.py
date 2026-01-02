@@ -215,6 +215,9 @@ class RegimeTradingBot:
             order_type = mt5.ORDER_TYPE_SELL
             price = tick.bid
         
+        # Use FOK filling mode (Fill or Kill) - works with Deriv
+        type_filling = mt5.ORDER_FILLING_FOK
+        
         # Prepare request
         request = {
             "action": mt5.TRADE_ACTION_DEAL,
@@ -228,7 +231,7 @@ class RegimeTradingBot:
             "magic": 123456,  # Magic number to identify our trades
             "comment": f"Regime:{regime}",
             "type_time": mt5.ORDER_TIME_GTC,
-            "type_filling": mt5.ORDER_FILLING_IOC,
+            "type_filling": type_filling,
         }
         
         # Send order
@@ -438,13 +441,22 @@ class RegimeTradingBot:
             strategy = self.strategies[symbol]
             summary = strategy.get_regime_summary()
             
+            # Get latest volatility percentile
+            df = self.get_ohlc_data(symbol, bars=150)
+            vol_pct = ""
+            if df is not None:
+                from utils.regime_detector import calculate_volatility_metrics
+                vol_metrics = calculate_volatility_metrics(df)
+                if vol_metrics['is_valid']:
+                    vol_pct = f"{vol_metrics['volatility_percentile']:.0f}%"
+            
             pos_str = ""
             if symbol in self.positions:
                 pos = self.positions[symbol]
-                pos_str = f"{pos.direction} {pos.volume}"
+                pos_str = f"{pos.direction} {pos.volume:.2f}"
             
             print(f"{symbol:<25} {summary['current_regime']:<18} "
-                  f"{summary['regime_age_bars']:>4} {'':>5} {pos_str:>10}")
+                  f"{summary['regime_age_bars']:>4} {vol_pct:>5} {pos_str:>10}")
         
         print("-"*70)
         
