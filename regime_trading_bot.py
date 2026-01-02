@@ -14,10 +14,15 @@ Features:
 import sys
 import time
 import json
+import os
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict, List, Optional
 from dataclasses import dataclass, asdict
+
+# Load environment variables
+from dotenv import load_dotenv
+load_dotenv()
 
 try:
     import MetaTrader5 as mt5
@@ -102,9 +107,30 @@ class RegimeTradingBot:
         )
     
     def connect(self) -> bool:
-        """Connect to MT5"""
+        """Connect to MT5 using environment variables"""
+        # Get credentials from environment
+        login = os.getenv('MT5_LOGIN')
+        password = os.getenv('MT5_PASSWORD')
+        server = os.getenv('MT5_SERVER', 'Deriv-Demo')
+        
+        if not login or not password:
+            logger.error("MT5_LOGIN and MT5_PASSWORD must be set in environment variables")
+            return False
+        
+        try:
+            login = int(login)
+        except ValueError:
+            logger.error("MT5_LOGIN must be a number")
+            return False
+        
         if not mt5.initialize():
             logger.error(f"MT5 initialization failed: {mt5.last_error()}")
+            return False
+        
+        # Login to account
+        if not mt5.login(login, password=password, server=server):
+            logger.error(f"MT5 login failed: {mt5.last_error()}")
+            mt5.shutdown()
             return False
         
         account = mt5.account_info()
