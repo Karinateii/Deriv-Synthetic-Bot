@@ -1,6 +1,3 @@
-# MetaTrader5 (remove version constraint for Linux compatibility)
-MetaTrader5
-
 # Data analysis
 pandas==1.5.3
 numpy==1.24.3
@@ -11,9 +8,14 @@ loguru==0.7.0
 # Environment variables
 python-dotenv==1.0.0
 
-# Trading strategies (optional, for other strategies)
-ta==0.11.0
+# WebSocket for Deriv API
+websocket-client==1.6.4
+
+# HTTP requests
 requests==2.31.0
+
+# Technical analysis (optional)
+ta==0.11.0
 
 # Visualization
 matplotlib==3.8.2
