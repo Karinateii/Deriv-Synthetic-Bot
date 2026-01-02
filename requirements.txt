@@ -1,5 +1,5 @@
-# MetaTrader5
-MetaTrader5==5.0.45
+# MetaTrader5 (remove version constraint for Linux compatibility)
+MetaTrader5
 
 # Data analysis
 pandas==1.5.3
