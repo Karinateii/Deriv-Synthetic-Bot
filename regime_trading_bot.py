@@ -57,15 +57,19 @@ class Position:
 class RegimeTradingBot:
     """Automated trading bot using the Regime-Aware Strategy"""
     
-    def __init__(self, symbols: List[str], risk_per_trade: float = 0.01):
+    def __init__(self, symbols: List[str], risk_per_trade: float = None):
         """
         Initialize the trading bot
         
         Args:
             symbols: List of symbols to trade
-            risk_per_trade: Risk per trade as decimal (0.01 = 1%)
+            risk_per_trade: Risk per trade as decimal (0.01 = 1%). If None, reads from env or uses default 1%
         """
         self.symbols = symbols
+        
+        # Load from environment or use defaults
+        if risk_per_trade is None:
+            risk_per_trade = float(os.getenv('RISK_PER_TRADE', '0.01'))
         self.risk_per_trade = risk_per_trade
         
         # One strategy instance per symbol to maintain state
@@ -80,8 +84,8 @@ class RegimeTradingBot:
         self.daily_trades = 0
         self.daily_pnl = 0.0
         self.last_trade_date = datetime.now().date()
-        self.max_daily_trades = 10
-        self.max_daily_loss = 0.05  # 5%
+        self.max_daily_trades = int(os.getenv('MAX_DAILY_TRADES', '10'))
+        self.max_daily_loss = float(os.getenv('MAX_DAILY_LOSS', '0.05'))
         
         # Bot state
         self.is_running = False
