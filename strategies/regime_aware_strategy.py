@@ -504,7 +504,20 @@ class RegimeAwareStrategy(BaseStrategy):
         """Generate trade setup based on current regime"""
         
         if regime_analysis.regime == MarketRegime.QUIET_RANGE:
-            return self._setup_mean_reversion(df, current_price, regime_analysis)
+            # Mean reversion disabled - skip quiet range trades
+            return TradeSetup(
+                signal='NEUTRAL',
+                confidence=0.0,
+                regime=regime_analysis.regime,
+                entry_price=current_price,
+                stop_loss=0,
+                take_profit=0,
+                position_size_multiplier=0,
+                max_hold_bars=0,
+                exit_conditions=[],
+                invalidation_price=0,
+                reason="Mean reversion trading disabled"
+            )
         
         elif regime_analysis.regime == MarketRegime.TRENDING_CALM:
             return self._setup_trend_continuation(df, current_price, regime_analysis)
