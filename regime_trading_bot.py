@@ -592,6 +592,12 @@ def main():
     """Start the trading bot"""
     # Symbols to trade (Volatility indices tend to have the best regimes)
     symbols = [
+        'Volatility 10 1s',
+        'Volatility 10 Index',
+        'Volatility 15 1s',
+        'Volatility 25 Index',
+        'Volatility 30 1s',
+        'Volatility 50 1s',
         'Volatility 50 Index',
         'Volatility 75 Index',
         'Volatility 100 Index',
