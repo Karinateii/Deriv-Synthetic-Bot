@@ -323,7 +323,7 @@ class RegimeTradingBotDeriv:
         # Analyze
         signal, confidence, metadata = strategy.analyze(df, current_price)
         
-        if signal != 'NEUTRAL' and confidence >= 50:
+        if signal != 'NEUTRAL' and confidence >= (Config.MIN_CONFIDENCE_SCORE * 100):
             logger.info(f"{symbol}: {signal} signal ({confidence:.0f}%) - {metadata.get('regime', 'unknown')}")
             logger.info(f"   Reason: {metadata.get('reason', 'N/A')}")
             

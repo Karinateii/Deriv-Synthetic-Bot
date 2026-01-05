@@ -435,7 +435,7 @@ class RegimeTradingBot:
             logger.info(f"   Reason: {metadata.get('reason', 'N/A')}")
         
         # Check for trade
-        if signal in ['BUY', 'SELL'] and confidence >= 0.50:
+        if signal in ['BUY', 'SELL'] and confidence >= Config.REGIME_MIN_CONFIDENCE:
             # Get trade parameters
             stop_loss = metadata.get('stop_loss')
             take_profit = metadata.get('take_profit')
